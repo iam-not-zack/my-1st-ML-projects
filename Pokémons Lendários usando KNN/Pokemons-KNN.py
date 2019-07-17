@@ -94,21 +94,31 @@ X_treino, X_teste, y_treino, y_teste = train_test_split(params_,pokemon["Legenda
 # Sondar o valor de K:
 taxa_de_erro = []
 
-for i in range(1, 50):
-    knn = KNeighborsClassifier(n_neighbors=i)
-    knn.fit(X_treino, y_treino)
+treino_scores = []
+teste_scores  = []
+
+for i in range(1,25):
+    knn=KNeighborsClassifier(n_neighbors=i)
+    knn.fit(X_treino,y_treino)
     predic_i = knn.predict(X_teste)
     taxa_de_erro.append(np.mean(predic_i != y_teste))
+    treino_scores.append(knn.score(X_treino,y_treino))
+    teste_scores.append(knn.score(X_teste,y_teste))
 
+    
 # Vamos observar o erro dado o valor de K
-fig = plt.figure(figsize=(12, 6))
-plt.plot(range(1, 50), taxa_de_erro, color='blue', linestyle='dashed', marker='.',
+fig = plt.figure(figsize=(12,6))
+plt.plot(range(1,25),taxa_de_erro,color='blue', linestyle='dashed', marker='.',
          markerfacecolor='red', markersize=7)
 plt.title('Taxa de Erro vs. Valor de K')
 plt.xlabel('K')
 plt.ylabel('Taxa de Erro')
 
-knn = KNeighborsClassifier(n_neighbors=20)
+plt.figure(figsize=(12,6))
+ax1=sns.lineplot(range(1,25),treino_scores,marker='o',label='Treino Score')
+ax2=sns.lineplot(range(1,25),teste_scores,marker='o',label='Teste Score')
+
+knn = KNeighborsClassifier(n_neighbors=15)
 knn.fit(X_treino,y_treino)
 predic = knn.predict(X_teste)
 # Vamos observar nossa matriz de confusão:
